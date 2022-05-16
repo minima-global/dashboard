@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@minima-global/mds-api": "latest",
+    "@minima-global/mds-api-runnable": "latest",
+    "@reduxjs/toolkit": "^1.8.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
@@ -10,8 +13,12 @@
     "@types/node": "^16.11.35",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
+    "browserify": "^17.0.0",
+    "chart.js": "^3.7.1",
     "react": "^18.1.0",
+    "react-chartjs-2": "^4.1.0",
     "react-dom": "^18.1.0",
+    "react-redux": "^8.0.1",
     "react-scripts": "5.0.1",
     "typescript": "^4.6.4",
     "web-vitals": "^2.1.4"
@@ -20,7 +27,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "bundle-init": "browserify src/backend/init.js -o build/init-es5.js",
+    "bundle-newBlock": "browserify src/backend/newBlock.js -o build/newBlock-es5.js",
+    "bundle-newMaxima": "browserify src/backend/newMaxima.js -o build/newMaxima-es5.js",
+    "bundle-runnables": "npm run bundle-init && npm run bundle-newBlock && npm run bundle-newMaxima",
+    "build-zip": "npm run build && npm run bundle-runnables --mode=production && cd build && zip -r dashboard.zip . && mv dashboard.zip ../"
   },
   "eslintConfig": {
     "extends": [
