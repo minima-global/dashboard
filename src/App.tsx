@@ -39,7 +39,9 @@ function App() {
     datasets: [
       {
         // label: "Block vs Time",
+        label: "Time",
         data: blocktime.ms,
+        backgroundColor: "#317aff",
       },
     ],
   });
@@ -77,7 +79,9 @@ function App() {
       labels: blocktime.blockHeight, // x-axis
       datasets: [
         {
+          label: "time",
           data: blocktime.ms, // y-axis
+          backgroundColor: "#317aff",
         },
       ],
     });
@@ -88,8 +92,6 @@ function App() {
       <div style={{ width: 700, height: 700 }}>
         <BarChart barData={userData} />
         <BlockTimeChart blockTimeData={blockTimeData} />
-        <div>Last {blocktime.blockHeight.length} blocks</div>
-        <div></div>
       </div>
     </div>
   );
