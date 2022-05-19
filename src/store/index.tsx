@@ -1,12 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "./features/counter/counterSlice";
 import blockTimeReducer from "./features/blocktime/blockTimeSlice";
+import txnBlockReducer from "./features/txnblock/txnBlockSlice";
+import ramTimeReducer from "./features/txnblock/txnBlockSlice";
+import chainWeightReducer from "./features/chainweight/chainWeightSlice";
+import infographsReducer from "./features/infographs/infographsSlice";
 import { useDispatch } from "react-redux";
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     blocktime: blockTimeReducer,
+    txnblock: txnBlockReducer,
+    ramtime: ramTimeReducer,
+    chainweight: chainWeightReducer,
+    infographs: infographsReducer,
   },
 });
 

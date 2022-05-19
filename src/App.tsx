@@ -7,12 +7,19 @@ import { RootState, useAppDispatch } from "./store";
 import { useSelector } from "react-redux";
 
 // mds ws
-import { commands, ws } from "@minima-global/mds-api";
+import { commands, Status, Txpow, ws } from "@minima-global/mds-api";
 import {
   BlockTimeState,
   updateBlockTime,
 } from "./store/features/blocktime/blockTimeSlice";
 import BlockTimeChart from "./components/charts/blockTimeChart";
+import ChainWeightChart from "./components/charts/ChainWeightChart";
+import RamTimeChart from "./components/charts/RamTimeChart";
+import TXNPerBlockChart from "./components/charts/TXNPerBlockChart";
+import { updateTXNPerBlock } from "./store/features/txnblock/txnBlockSlice";
+import { updateRamTime } from "./store/features/ramtime/ramTimeSlice";
+import { updateChainWeight } from "./store/features/chainweight/chainWeightSlice";
+import { updateInfographs } from "./store/features/infographs/infographsSlice";
 
 function App() {
   console.log(`Rendering App.tsx`);
@@ -58,11 +65,49 @@ function App() {
             break;
           case "NEWBLOCK":
             console.log(`Newblock event.`);
+            // data received from event
+            const txpow: Txpow = data.txpow;
+
+            commands.status().then((s: Status) => {
+              // update ramtime chart
+              dispatch(
+                updateRamTime({
+                  ram: s.memory.ram,
+                  ms: txpow.header.timemilli,
+                })
+              );
+              // update chain weight
+              dispatch(
+                updateChainWeight({
+                  weight: s.chain.weight,
+                  ms: txpow.header.timemilli,
+                })
+              );
+
+              // update devices
+              dispatch(
+                updateInfographs({
+                  devices: s.devices,
+                  uptime: s.uptime,
+                  ramusage: s.memory.ram,
+                  diskusage: s.memory.disk,
+                })
+              );
+            });
+
+            // dispatch new data to the txnblock chart
+            dispatch(
+              updateTXNPerBlock({
+                noOfTransactions: txpow.body.txnlist.length,
+                blockHeight: txpow.header.block,
+              })
+            );
+
             // dispatch new data to the blockTime chart
             dispatch(
               updateBlockTime({
-                blockHeight: data.txpow.header.block,
-                ms: data.txpow.header.timemilli,
+                blockHeight: txpow.header.block,
+                ms: txpow.header.timemilli,
               })
             );
             break;
@@ -91,7 +136,22 @@ function App() {
     <div className="App">
       <div style={{ width: 700, height: 700 }}>
         <BarChart barData={userData} />
+        {/* 
+        Add the four bunch of infographs about
+        - Ram usage
+        - Disk Usage
+        - Uptime
+        - Devices connected
+        <BunchOfInfographs />
+        */}
         <BlockTimeChart blockTimeData={blockTimeData} />
+        <ChainWeightChart />
+        <RamTimeChart />
+        <TXNPerBlockChart />
+        {/* 
+        rest of charts...
+        
+        */}
       </div>
     </div>
   );
